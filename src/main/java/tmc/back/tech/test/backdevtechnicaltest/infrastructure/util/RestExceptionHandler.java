@@ -9,23 +9,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.result.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.server.ServerWebExchange;
-import tmc.back.tech.test.backdevtechnicaltest.application.exception.ProductIdNotFoundException;
 
 import java.net.ConnectException;
 
 @RestControllerAdvice
 @Slf4j
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-
-    @ExceptionHandler(value = {
-            ProductIdNotFoundException.class
-    })
-    protected ResponseEntity<Object> handleNotFound (RuntimeException ex, ServerWebExchange webRequest){
-        String bodyOfResponse = "Product Id not found";
-        log.debug("Product not found handled - NOT FOUND STATUS");
-        return handleExceptionInternal(ex, bodyOfResponse,
-                new HttpHeaders(), HttpStatus.NOT_FOUND, webRequest).block();
-    }
 
     @ExceptionHandler(value = {
             NullPointerException.class,

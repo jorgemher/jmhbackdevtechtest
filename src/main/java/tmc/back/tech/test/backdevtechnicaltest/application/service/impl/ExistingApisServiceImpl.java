@@ -4,13 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import tmc.back.tech.test.backdevtechnicaltest.application.service.ExistingApisService;
 import tmc.back.tech.test.backdevtechnicaltest.infrastructure.dto.ProductDetail;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -26,15 +27,13 @@ public class ExistingApisServiceImpl implements ExistingApisService {
 
     @Async
     @Override
-    public CompletableFuture<ProductDetail> getProductFuture(Integer productId) {
+    public Flux<ProductDetail> getProductFuture(Integer productId) {
         Map<String, Integer> params = getProductIdParamMap(productId);
-        return CompletableFuture.completedFuture(restTemplate.getForObject(getProduct, ProductDetail.class, params));
-    }
-
-    @Override
-    public ProductDetail getProduct(Integer productId) {
-        Map<String, Integer> params = getProductIdParamMap(productId);
-        return restTemplate.getForObject(getProduct, ProductDetail.class, params);
+        return WebClient.create()
+                .get()
+                .uri(getProduct, params)
+                .retrieve()
+                .bodyToFlux(ProductDetail.class);
     }
 
     private static Map<String, Integer> getProductIdParamMap(Integer productId) {

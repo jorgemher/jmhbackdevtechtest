@@ -12,9 +12,6 @@ import tmc.back.tech.test.backdevtechnicaltest.application.exception.ProductIdNo
 import tmc.back.tech.test.backdevtechnicaltest.application.service.ProductService;
 import tmc.back.tech.test.backdevtechnicaltest.infrastructure.dto.SimilarProducts;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -24,7 +21,7 @@ public class ProductRestService {
 
     @RequestMapping (method = RequestMethod.GET, path = "/product/{productId}/similar")
     public ResponseEntity<SimilarProducts> getProductsSimilar (@PathVariable("productId") String productId)
-            throws ProductIdNotFoundException, ExecutionException, InterruptedException, TimeoutException {
+            throws ProductIdNotFoundException {
         return ResponseEntity.ok(productService.getProductsSimilar(productId));
     }
 }

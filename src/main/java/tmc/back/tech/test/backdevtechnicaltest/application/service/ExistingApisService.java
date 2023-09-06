@@ -8,5 +8,4 @@ import java.util.Set;
 public interface ExistingApisService {
     Set<Integer> getProductSimilarIds(String productId);
     Flux<ProductDetail> getProductFuture(Integer productId);
-    ProductDetail getProduct(Integer productId);
 }

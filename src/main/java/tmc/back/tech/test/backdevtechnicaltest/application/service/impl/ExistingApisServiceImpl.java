@@ -36,12 +36,6 @@ public class ExistingApisServiceImpl implements ExistingApisService {
                 .bodyToFlux(ProductDetail.class);
     }
 
-    @Override
-    public ProductDetail getProduct(Integer productId) {
-        Map<String, Integer> params = getProductIdParamMap(productId);
-        return restTemplate.getForObject(getProduct, ProductDetail.class, params);
-    }
-
     private static Map<String, Integer> getProductIdParamMap(Integer productId) {
         Map<String, Integer > params = new HashMap<>();
         params.put("productId", productId);

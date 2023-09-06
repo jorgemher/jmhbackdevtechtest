@@ -12,8 +12,6 @@ import tmc.back.tech.test.backdevtechnicaltest.infrastructure.dto.ProductDetail;
 import tmc.back.tech.test.backdevtechnicaltest.infrastructure.dto.SimilarProducts;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 @Service
 @Slf4j
@@ -23,14 +21,12 @@ public class ProductServiceImpl implements ProductService {
     private final ExistingApisService existingApisService;
 
     @Override
-    public SimilarProducts getProductsSimilar(String id) throws ProductIdNotFoundException, ExecutionException, InterruptedException, TimeoutException {
+    public SimilarProducts getProductsSimilar(String id) throws ProductIdNotFoundException {
         SimilarProducts similarProducts = new SimilarProducts();
         Set<Integer> productSimilarIds = existingApisService.getProductSimilarIds(id);
         if (Objects.nonNull(productSimilarIds)) {
             Set<ProductDetail> productDetails = new HashSet<>();
-            futureImplementation(productSimilarIds, productDetails);
-            //noFutureImplementation(productSimilarIds, productDetails);
-
+            getProductDetails(productSimilarIds, productDetails);
             similarProducts.setProductDetailList(productDetails);
         } else {
             throw new ProductIdNotFoundException();
@@ -38,13 +34,9 @@ public class ProductServiceImpl implements ProductService {
         return similarProducts;
     }
 
-    private void futureImplementation(Set<Integer> productSimilarIds, Set<ProductDetail> productDetails) {
+    private void getProductDetails(Set<Integer> productSimilarIds, Set<ProductDetail> productDetails) {
         List<Flux<ProductDetail>> fluxList = new ArrayList<>();
         productSimilarIds.forEach(id -> fluxList.add(existingApisService.getProductFuture(id)));
         fluxList.forEach(flux -> flux.subscribe(productDetails::add));
-    }
-
-    private void noFutureImplementation(Set<Integer> productSimilarIds, Set<ProductDetail> productDetails){
-        productSimilarIds.forEach(id -> productDetails.add(existingApisService.getProduct(id)));
     }
 }
